@@ -1,0 +1,55 @@
+version: '3'
+services:
+  ggr:
+    restart: always
+    image: aerokube/ggr
+    network_mode: bridge
+    links:
+      - selenoid
+      - selenoid_win
+    ports:
+      - "4444:4444"
+    volumes:
+      - "./ggr/etc/grid-router:/etc/grid-router:ro"
+    command: ["-quotaDir", "/etc/grid-router/quota", "-listen", ":4444"]
+  ggr-ui:
+    network_mode: bridge
+    restart: always
+    image: aerokube/ggr-ui
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./ggr/etc/grid-router:/etc/grid-router:ro"
+  selenoid-ui:
+    network_mode: bridge
+    restart: always
+    image: aerokube/selenoid-ui
+    links:
+      - ggr-ui
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://ggr-ui:8888"]
+  selenoid_win:
+    network_mode: bridge
+    image: aerokube/selenoid:latest-release
+    volumes:
+      - "./etc/q/:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./video:/opt/selenoid/video"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+    ports:
+      - "4445:4444"
+  selenoid:
+    network_mode: bridge
+    image: aerokube/selenoid:latest-release
+    volumes:
+      - "./etc/w/:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./video:/opt/selenoid/video"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+    ports:
+      - "4446:4444"

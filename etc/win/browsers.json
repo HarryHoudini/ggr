@@ -1,0 +1,10 @@
+{
+  "internet explorer": {
+    "default": "11",
+    "versions": {
+      "11": {
+        "image": ["IEDriverServer_x64\\IEDriverServer.exe", "--log-level=DEBUG"]
+      }
+    }
+  }
+}

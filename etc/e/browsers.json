@@ -1,0 +1,12 @@
+{
+    "IE": {
+        "default": "70.0",
+        "versions": {
+				"70.0": {
+					"image": "selenoid/firefox:40.0",
+					"port": "4444",
+					"path": "/"
+				}
+        }
+    }
+}
